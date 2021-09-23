@@ -9,7 +9,7 @@
     }
 </script>
 
-<div class="result" on:click>
+<div class="result">
     <slot name="title"></slot>
     <slot name="description"></slot>
     <slot name="pageCount"></slot>
@@ -19,7 +19,9 @@
     
     .result {
         border-top: 1px solid black;
-        overflow: hidden
+        overflow: hidden;
+        background: grey;
+        font-size: small;
     }
 
     .result:hover {

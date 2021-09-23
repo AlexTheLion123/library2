@@ -48,9 +48,32 @@
             return results;
     }
 
-    function resultClickHandler(e) {
-        const chosen = this;
-        console.log(chosen);
+    function resultClickHandler(e) { // event delegation       
+        const container = this;
+        
+        let parent = e.target.parentElement;
+        while(parent != container){ // avoids infinite loop
+            if(parent.classList.contains("result")){ // gets the individual result object
+                break;
+            }
+            parent = parent.parentNode;
+        }
+        const specificResult = parent;
+
+        const children = parent.children
+        
+        // get index of results
+        let index = 0;
+        while(parent.previousElementSibling){
+            parent = parent.previousElementSibling
+            index++;
+        }
+
+        return results[index];
+    }
+
+    function divclick(e) {
+        console.log(e.target);
     }
 
 </script>
@@ -79,9 +102,9 @@
         </div>
 
         {#if results}
-            <div class="results">
+            <div class="results" on:click={resultClickHandler}>
                 {#each results as result}
-                    <Result on:click={resultClickHandler}>
+                    <Result>
                         <div class="result-heading" slot="title"><h3>{result.title}</h3><h4>{result.authors}</h4></div>
                         <p slot="description">{result.description}</p>
                         <h5 slot="pageCount">Pages: {result.pageCount}</h5>
@@ -106,11 +129,6 @@
 
     h5, p {
         margin: -5px 10px 10px;
-    }
-
-    .results{
-        background: grey;
-        font-size: small;
     }
 
     .searchBar {
