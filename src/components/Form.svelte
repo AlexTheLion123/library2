@@ -18,8 +18,7 @@
     }
 
     const showResults = async () => {
-        results = await getResults();
-        console.log(results);
+        results = await getResults(); // when we get results, DOM updates automatically
     }
 
     
@@ -54,6 +53,7 @@
                     <Result>
                         <div class="result-heading" slot="title"><h3>{result.title}</h3><h4>{result.authors}</h4></div>
                         <p slot="description">{result.description}</p>
+                        <h5 slot="pageCount">Pages: {result.pageCount}</h5>
                     </Result>
                 {/each}
             </div>
@@ -73,9 +73,7 @@
         margin: 0 10px;
     }
 
-    
-
-    p {
+    h5, p {
         margin: -5px 10px 10px;
     }
 

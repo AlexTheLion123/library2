@@ -10,6 +10,7 @@
 <div class="result" on:click={onResultClick}>
     <slot name="title">Unknown title</slot>
     <slot name="description">Unknown description</slot>
+    <slot name="pageCount">Unknown pages</slot>
 </div>
 
 <style>
