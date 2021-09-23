@@ -5,7 +5,23 @@
     export let showForm;
     let results;
 
-    const getResults = async () => {
+    const getResults = async (e) => {
+            //get form data
+            // console.log(e.target.elements);
+            // const fd = new FormData(this);
+            // const values = Object.fromEntries([...fd]);
+            // console.log(values);
+
+            console.log(e);
+            const form = e.target
+            const data2 = {};
+            for (let i=0; i < form.elements.length; i++) {
+                const elem = form.elements[i];
+                data2[elem.name] = elem.value
+            }
+            console.log(data2);
+
+            // get search results 
             const url = `https://www.googleapis.com/books/v1/volumes/?q=${"harry potter"}`
             const res = await fetch(url)
             let data = await res.json();
@@ -17,8 +33,8 @@
             return result;
     }
 
-    const showResults = async () => {
-        results = await getResults(); // when we get results, DOM updates automatically
+    const showResults = async (e) => {
+        results = await getResults(e); // when we get results, DOM updates automatically
     }
 
     
@@ -28,7 +44,7 @@
 
 <div class="form-popup-wrap" class:modal-form={showForm==true} >
     <form 
-        on:submit|preventDefault={showResults} 
+        on:submit|preventDefault={getResults} 
     >
         <div class="form-exit">
             <div 
@@ -42,8 +58,8 @@
         <div class="form-content">
             <div class="search-bar">
                 <label for="search-input"></label>
-                <input type="text" name="search-input" id="search-input">
-                <input type="submit" value="Submit" id="search-button">
+                <input type="text" name="search-bar" id="search-input">
+                <button type="submit" id="submit-button">Submit</button>
             </div>
         </div>
 
