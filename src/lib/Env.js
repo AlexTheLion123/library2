@@ -1,0 +1,1 @@
+export const BOOKS_KEY = import.meta.env.VITE_API_KEY;

@@ -11,15 +11,22 @@
         padding: 0;
     }
     :global(body) {
-        background: #402d10;
+        background: #fafafa;
         margin: 0;
         padding: 0;
         min-height: 100vh;
     }
 
+    :global(*) {
+        box-sizing: border-box
+    }
+
     nav {
-        background: #c9b4a7;
+        background: #3b3831;
         height: 50px;
+        color: white;
+        border-bottom: 3px solid #5c594e;
+        box-shadow: 0 0 10px 1px black;
         
         display: flex;
         justify-content: center;
