@@ -1,16 +1,18 @@
 <script>
     let title;
     let description;
-    
+    let pages;
+    let thumbnnail;
+
     const onResultClick = () => {
 
     }
 </script>
 
-<div class="result" on:click={onResultClick}>
-    <slot name="title">Unknown title</slot>
-    <slot name="description">Unknown description</slot>
-    <slot name="pageCount">Unknown pages</slot>
+<div class="result" on:click>
+    <slot name="title"></slot>
+    <slot name="description"></slot>
+    <slot name="pageCount"></slot>
 </div>
 
 <style>

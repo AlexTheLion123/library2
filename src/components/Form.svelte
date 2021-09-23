@@ -4,26 +4,46 @@
 
     export let showForm;
     let results;
+    let valid = true;
 
     async function getResults(e) {
             //get form data
             const fd = new FormData(this);
-            const values = Object.fromEntries([...fd]);
-            console.log(values);
+            const {searchBar} = Object.fromEntries([...fd]);
+
+
+            if(!searchBar) {
+                valid = false;
+                alert("You have not entered any search terms")
+                return;
+            } else {
+                valid = true;
+            }
 
             // get search results 
-            const url = `https://www.googleapis.com/books/v1/volumes/?q=${"harry potter"}`
+            const url = `https://www.googleapis.com/books/v1/volumes/?q=${searchBar}`
             const res = await fetch(url)
             let data = await res.json();
+            
+            if(data.totalItems == 0){
+                valid = false;
+                alert("Invalid search terms")
+                return;
+            }
+            
             //res = JSON.parse(res).items;
-            data = data.items              
+            data = data.items           
             results = data.map(obj => obj.volumeInfo).map(
                 ({title,authors,pageCount,imageLinks: {thumbnail},previewLink, description}) => 
                 ({title,authors,pageCount,thumbnail,previewLink, description}))
+
             return results;
     }
 
-    
+    function resultClickHandler(e) {
+        const chosen = this;
+        console.log(chosen);
+    }
 
 </script>
 
@@ -42,17 +62,19 @@
         </div>
 
         <div class="form-content">
-            <div class="search-bar">
+            <div class="searchBar">
                 <label for="search-input"></label>
-                <input type="text" name="search-bar" id="search-input">
+                <input type="text" name="searchBar" id="search-input">
                 <button type="submit" id="submit-button">Submit</button>
+
             </div>
+            
         </div>
 
         {#if results}
             <div class="results">
                 {#each results as result}
-                    <Result>
+                    <Result on:click={resultClickHandler}>
                         <div class="result-heading" slot="title"><h3>{result.title}</h3><h4>{result.authors}</h4></div>
                         <p slot="description">{result.description}</p>
                         <h5 slot="pageCount">Pages: {result.pageCount}</h5>
@@ -84,12 +106,8 @@
         font-size: small;
     }
 
-    .search-bar {
+    .searchBar {
         padding: 50px;
-    }
-
-    #search-button {
-        padding: 10px;
     }
 
     #search-input {
@@ -181,25 +199,6 @@
 
     label:not(.pages-label) {
         display: none;
-    }
-
-    .pages-label {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-    }
-
-    #page-number {
-        background: lightblue;
-        border: 1px solid black;
-        padding: 10px;
-        display: grid;
-        place-items: center;
-        margin: 10px;
-    }
-
-    .buttons {
-        margin: 10px
     }
 
     #submit-button {
