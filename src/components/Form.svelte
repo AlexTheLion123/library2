@@ -5,8 +5,14 @@
     export let showForm;
     let results;
     let valid = true;
+    let loading = false;
 
     async function getResults(e) {
+
+            if(results){
+                results = undefined;
+            }
+
             //get form data
             const fd = new FormData(this);
             const {searchBar} = Object.fromEntries([...fd]);
@@ -22,13 +28,16 @@
 
             // get search results 
             const url = `https://www.googleapis.com/books/v1/volumes/?q=${searchBar}`
-            const res = await fetch(url)
-            let data = await res.json();
             
+            loading = true;
+            const res = await fetch(url);
+            let data = await res.json();
+            loading = false;
+
             if(data.totalItems == 0){
                 valid = false;
                 alert("Invalid search terms")
-                return;
+                return results;
             }
             
             //res = JSON.parse(res).items;
@@ -36,7 +45,6 @@
             results = data.map(obj => obj.volumeInfo).map(
                 ({title,authors,pageCount,imageLinks: {thumbnail},previewLink, description}) => 
                 ({title,authors,pageCount,thumbnail,previewLink, description}))
-
             return results;
     }
 
@@ -66,9 +74,8 @@
                 <label for="search-input"></label>
                 <input type="text" name="searchBar" id="search-input">
                 <button type="submit" id="submit-button">Submit</button>
-
+                <div class="loading" class:modal-form={loading==false}>Loading...</div>
             </div>
-            
         </div>
 
         {#if results}
@@ -123,8 +130,9 @@
         top: 0;
         left: 0;
 
-        display: grid;
-        place-items: center;
+        display: flex;
+        justify-content: center;
+
         background: rgba(0, 0, 0, .7); 
     }
 
@@ -133,6 +141,9 @@
         border-radius: 10px;
         overflow: hidden;
         width: 80%;
+
+        position: absolute;
+        top: 150px;
         
         max-height: 700px;
         overflow: auto;
