@@ -12,14 +12,14 @@
             //res = JSON.parse(res).items;
             data = data.items              
             const result = data.map(obj => obj.volumeInfo).map(
-                ({title,author,pageCount,imageLinks: {thumbnail},previewLink, description}) => 
-                ({title,author,pageCount,thumbnail,previewLink, description}))
+                ({title,authors,pageCount,imageLinks: {thumbnail},previewLink, description}) => 
+                ({title,authors,pageCount,thumbnail,previewLink, description}))
             return result;
     }
 
     const showResults = async () => {
         results = await getResults();
-        
+        console.log(results);
     }
 
     
@@ -51,7 +51,10 @@
         {#if results}
             <div class="results">
                 {#each results as result}
-                    <Result let:title={result.title} let:description={result.description}></Result>
+                    <Result>
+                        <div class="result-heading" slot="title"><h3>{result.title}</h3><h4>{result.authors}</h4></div>
+                        <p slot="description">{result.description}</p>
+                    </Result>
                 {/each}
             </div>
         {/if}
@@ -63,21 +66,23 @@
 
 
 <style>
+    .result-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0 10px;
+    }
+
+    
+
+    p {
+        margin: -5px 10px 10px;
+    }
 
     .results{
         background: grey;
         font-size: small;
     }
-
-    h3 {
-        margin: 5px 10px;
-    }
-
-    p {
-        margin: 0 10px;
-    }
-
-
 
     .search-bar {
         padding: 50px;
@@ -109,8 +114,11 @@
         background: grey;
         border-radius: 10px;
         overflow: hidden;
-        width: 80%
+        width: 80%;
         
+        max-height: 700px;
+        overflow: auto;
+
     }
 
     .form-exit {

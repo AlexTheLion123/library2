@@ -8,13 +8,14 @@
 </script>
 
 <div class="result" on:click={onResultClick}>
-    <slot title={title} description={description}></slot>
+    <slot name="title">Unknown title</slot>
+    <slot name="description">Unknown description</slot>
 </div>
 
 <style>
+    
     .result {
         border-top: 1px solid black;
-        max-height: 80px;
         overflow: hidden
     }
 
