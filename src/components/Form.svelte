@@ -5,21 +5,11 @@
     export let showForm;
     let results;
 
-    const getResults = async (e) => {
+    async function getResults(e) {
             //get form data
-            // console.log(e.target.elements);
-            // const fd = new FormData(this);
-            // const values = Object.fromEntries([...fd]);
-            // console.log(values);
-
-            console.log(e);
-            const form = e.target
-            const data2 = {};
-            for (let i=0; i < form.elements.length; i++) {
-                const elem = form.elements[i];
-                data2[elem.name] = elem.value
-            }
-            console.log(data2);
+            const fd = new FormData(this);
+            const values = Object.fromEntries([...fd]);
+            console.log(values);
 
             // get search results 
             const url = `https://www.googleapis.com/books/v1/volumes/?q=${"harry potter"}`
@@ -27,14 +17,10 @@
             let data = await res.json();
             //res = JSON.parse(res).items;
             data = data.items              
-            const result = data.map(obj => obj.volumeInfo).map(
+            results = data.map(obj => obj.volumeInfo).map(
                 ({title,authors,pageCount,imageLinks: {thumbnail},previewLink, description}) => 
                 ({title,authors,pageCount,thumbnail,previewLink, description}))
-            return result;
-    }
-
-    const showResults = async (e) => {
-        results = await getResults(e); // when we get results, DOM updates automatically
+            return results;
     }
 
     
