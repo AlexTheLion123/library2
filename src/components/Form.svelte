@@ -6,6 +6,7 @@
     let results;
     let valid = true;
     let loading = false;
+    let promise;
 
     async function getResults(e) {
 
@@ -29,26 +30,30 @@
             // get search results 
             const url = `https://www.googleapis.com/books/v1/volumes/?q=${searchBar}`
             
-            loading = true;
-            const res = await fetch(url);
-            let data = await res.json();
-            loading = false;
-
-            if(data.totalItems == 0){
-                valid = false;
-                alert("Invalid search terms")
-                return results;
-            }
+            promise = fetchData(url)
+                        .then(res => {
+                            if(res.totalItems == 0){
+                                valid = false;
+                                alert("Invalid search terms")
+                                return results;
+                            }
             
-            //res = JSON.parse(res).items;
-            data = data.items           
-            results = data.map(obj => obj.volumeInfo).map(
-                ({title,authors,pageCount,imageLinks: {thumbnail},previewLink, description}) => 
-                ({title,authors,pageCount,thumbnail,previewLink, description}))
-            return results;
+                            //res = JSON.parse(res).items;
+                            const data = res.items           
+                            results = data.map(obj => obj.volumeInfo).map(
+                                ({title,authors,pageCount,imageLinks: {thumbnail},previewLink, description}) => 
+                                ({title,authors,pageCount,thumbnail,previewLink, description}))
+                            return results;
+                        })
+
+        async function fetchData(url) {
+            const res = await fetch(url);
+            return res.json();
+        }
+            
     }
 
-    function resultClickHandler(e) { // event delegation       
+    function resultClickHandler(e) { // event delegation 
         const container = this;
         
         let parent = e.target.parentElement;
@@ -69,7 +74,9 @@
             index++;
         }
 
-        return results[index];
+        // the above code is all technically unecessary, could've just got the index from the searchCount, or even attach listeners to each results (although this does not delegate events)
+
+        return results[index]
     }
 
     function divclick(e) {
@@ -97,17 +104,22 @@
                 <label for="search-input"></label>
                 <input type="text" name="searchBar" id="search-input">
                 <button type="submit" id="submit-button">Submit</button>
-                <div class="loading" class:modal-form={loading==false}>Loading...</div>
+                {#await promise}
+                    <div>Loading...</div>
+                {/await}
             </div>
         </div>
 
         {#if results}
             <div class="results" on:click={resultClickHandler}>
-                {#each results as result}
+                {#each results as result, i}
                     <Result>
-                        <div class="result-heading" slot="title"><h3>{result.title}</h3><h4>{result.authors}</h4></div>
-                        <p slot="description">{result.description}</p>
-                        <h5 slot="pageCount">Pages: {result.pageCount}</h5>
+                        <svelte:fragment slot="title">
+                            <h3 id="title">{result.title}</h3><h4 id="authors">{result.authors}</h4>
+                        </svelte:fragment>
+                        <p id="description" slot="description">{result.description}</p>
+                        <h5 id="page" slot="pageCount">Pages: {result.pageCount}</h5>
+                        <h5 id="searchCount" slot="searchCount">{i+1}</h5>
                     </Result>
                 {/each}
             </div>
@@ -120,15 +132,32 @@
 
 
 <style>
+    #searchCount {
+        float: right;
+    }
+
+    h3, h4 {
+        display: inline-block;
+        margin: 10px;
+    }
+
+    #authors {
+        float: right;
+    }
+
     .result-heading {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin: 0 10px;
+        
     }
 
     h5, p {
         margin: -5px 10px 10px;
+    }
+
+    h5 {
+        display: inline;
     }
 
     .searchBar {

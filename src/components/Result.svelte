@@ -13,6 +13,7 @@
     <slot name="title"></slot>
     <slot name="description"></slot>
     <slot name="pageCount"></slot>
+    <slot name="searchCount"></slot>
 </div>
 
 <style>
