@@ -37,8 +37,9 @@
     .book-wrapper {
         padding: 30px;
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
         gap: 30px;
+        justify-content: center;
     }
 
 </style>

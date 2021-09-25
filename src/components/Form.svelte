@@ -1,5 +1,7 @@
 <script>
-    import book from '../lib/search';
+    import { library } from '../lib/stores';
+    import { Book } from '../lib/stores';
+
     import Result from './Result.svelte';
 
     export let showForm;
@@ -51,8 +53,8 @@
             return res.json();
         }
             
-    }
 
+    }
     function resultClickHandler(e) { // event delegation 
         const container = this;
         
@@ -75,12 +77,16 @@
         }
 
         // the above code is all technically unecessary, could've just got the index from the searchCount, or even attach listeners to each results (although this does not delegate events)
-
-        return results[index]
+        addBookToLibrary(results[index])
+        // return results[index]
     }
 
-    function divclick(e) {
-        console.log(e.target);
+    function addBookToLibrary(bookObj) {
+        if(typeof(bookObj)!="object"){
+            throw "not an object";
+        }
+        const book = new Book(bookObj); 
+        $library = [...$library, book]
     }
 
 </script>
